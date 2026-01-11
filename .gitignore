@@ -2,6 +2,7 @@
 serviceAccountKey.json
 madin-al-hikmah-presensi-firebase-adminsdk-fbsvc-299af8422e.json
 secrets_output.toml
+generate_secrets.py
 
 # Python
 __pycache__/
