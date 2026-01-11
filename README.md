@@ -1,56 +1,72 @@
-# Sistem Presensi Madin Al Hikmah
+# Sistem Presensi Madin
 
 Aplikasi presensi digital berbasis Streamlit dan Firebase.
 
 ## Setup Lokal
 
-1.  **Clone repository ini.**
-2.  **Buat Virtual Environment (opsional tapi disarankan):**
+1.  **Clone repository ini**
+
+2.  **Buat Virtual Environment (opsional tapi disarankan)**
     ```bash
     python -m venv venv
-    source venv/bin/activate  # Linux/Mac
+    source venv/bin/activate  # Linux / Mac
     # venv\Scripts\activate   # Windows
     ```
-3.  **Install Dependencies:**
+
+3.  **Install Dependencies**
     ```bash
     pip install -r requirements.txt
     ```
-4.  **Konfigurasi Firebase:**
-    *   Pastikan file `madin-al-hikmah-presensi-firebase-adminsdk-fbsvc-299af8422e.json` ada di root folder project. File ini digunakan untuk autentikasi saat development lokal.
-    *   **PENTING:** File ini sudah dimasukkan ke `.gitignore` sehingga tidak akan terupload ke repository public.
 
-5.  **Jalankan Aplikasi:**
+4.  **Konfigurasi Firebase (Development Lokal)**
+    *   Sediakan file Firebase Admin SDK (Service Account) di root folder project.
+    *   File ini hanya digunakan untuk kebutuhan development lokal.
+    *   **PENTING:** File kredensial tidak disertakan ke repository karena telah diamankan melalui `.gitignore`.
+
+5.  **Jalankan Aplikasi**
     ```bash
     streamlit run inde.py
     ```
 
-## Cara Deploy ke Streamlit Cloud
+## Deploy ke Streamlit Cloud
 
-Karena file credentials Firebase tidak boleh di-publish, kita akan menggunakan fitur **Streamlit Secrets**.
+Untuk menjaga keamanan kredensial Firebase, deployment menggunakan fitur **Streamlit Secrets**.
 
-1.  **Push code ke GitHub** (pastikan file JSON credentials tidak ikut terupload - sudah dihandle oleh `.gitignore`).
-2.  **Buka Streamlit Cloud** (share.streamlit.io) dan hubungkan dengan repository GitHub Anda.
-3.  **Deploy App:**
-    *   Repository: Pilih repo Anda.
+1.  **Push source code ke GitHub**
+    *   Pastikan file kredensial Firebase tidak ikut ter-push ke repository.
+
+2.  **Buka Streamlit Cloud**
+    *   Hubungkan Streamlit Cloud dengan repository GitHub.
+
+3.  **Deploy Aplikasi**
+    *   Repository: pilih repository project
     *   Main file path: `inde.py`
-4.  **Setting Secrets (Kredensial Database):**
-    *   Sebelum atau sesudah klik Deploy, masuk ke **Settings** -> **Secrets** di dashboard Streamlit Cloud aplikasi Anda.
-    *   Kita perlu memasukkan isi dari file JSON credentials ke dalam format TOML.
-    *   **Cara Mudah:**
-        1.  Jalankan script helper di lokal Anda:
+
+4.  **Konfigurasi Secrets (Kredensial Firebase)**
+    *   Masuk ke **Settings → Secrets** pada dashboard Streamlit Cloud.
+    *   Kredensial Firebase disimpan dalam format TOML.
+    *   **Langkah Praktis:**
+        1.  Jalankan script helper di lokal:
             ```bash
             python generate_secrets.py
             ```
-        2.  Script ini akan membuat file `secrets_output.toml`.
-        3.  Buka file `secrets_output.toml`, copy semua isinya.
-        4.  Paste ke kolom Secrets di Streamlit Cloud.
-        5.  Save.
+        2.  Script akan menghasilkan file `secrets_output.toml`.
+        3.  Salin seluruh isi file tersebut.
+        4.  Tempelkan ke kolom Secrets di Streamlit Cloud.
+        5.  Simpan perubahan.
 
-5.  **Reboot/Redeploy:** Jika aplikasi sudah berjalan namun error, restart aplikasi agar secrets baru terbaca.
+5.  **Restart / Redeploy**
+    *   Lakukan restart aplikasi agar konfigurasi secrets dapat terbaca dengan benar.
 
 ## Struktur Project
 
-*   `inde.py`: File utama aplikasi.
-*   `firebase_config.py`: Konfigurasi koneksi ke Firebase (menghandle local file vs secrets).
-*   `generate_secrets.py`: Script bantuan untuk convert JSON ke format Secrets TOML.
-*   `requirements.txt`: Daftar library yang dibutuhkan.
+*   `inde.py`: File utama aplikasi Streamlit
+*   `firebase_config.py`: Konfigurasi koneksi Firebase (menyesuaikan environment lokal dan Streamlit Secrets)
+*   `generate_secrets.py`: Script bantuan untuk mengonversi kredensial Firebase ke format TOML
+*   `requirements.txt`: Daftar dependensi Python
+
+## Catatan Keamanan
+
+*   Kredensial tidak pernah di-commit ke repository
+*   Tidak ada informasi sensitif yang ditampilkan di dokumentasi
+*   Aman digunakan untuk repository public
