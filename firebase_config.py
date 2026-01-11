@@ -9,8 +9,22 @@ from datetime import datetime
 def initialize_firebase():
     """Initialize Firebase app for Realtime Database"""
     if not firebase_admin._apps:
-        # Untuk development, gunakan service account key
+        # Coba ambil database_url dari secrets
+        database_url = None
+        try:
+            if "firebase" in st.secrets and "database_url" in st.secrets["firebase"]:
+                database_url = st.secrets["firebase"]["database_url"]
+        except:
+            pass
+            
+        # Jika tidak ada di secrets, cek apakah perlu hard-coded (opsional, user ingin dihapus)
+        if not database_url:
+            st.error("Database URL not found in secrets. Please configure secrets.toml")
+            return None
+
+        # Konfigurasi Auth
         if os.path.exists('madin-al-hikmah-presensi-firebase-adminsdk-fbsvc-299af8422e.json'):
+             # Untuk development local dengan file JSON
             cred = credentials.Certificate('madin-al-hikmah-presensi-firebase-adminsdk-fbsvc-299af8422e.json')
         else:
             # Fallback untuk deployment (gunakan secrets dari Streamlit)
@@ -28,11 +42,6 @@ def initialize_firebase():
                     "auth_provider_x509_cert_url": firebase_secrets["auth_provider_x509_cert_url"],
                     "client_x509_cert_url": firebase_secrets["client_x509_cert_url"]
                 })
-                # Gunakan URL dari secrets jika ada, jika tidak gunakan default
-                if "database_url" in firebase_secrets:
-                    database_url = firebase_secrets["database_url"]
-                else:
-                    database_url = 'https://madin-al-hikmah-presensi-default-rtdb.asia-southeast1.firebasedatabase.app/'
             except Exception as e:
                 st.error(f"Firebase configuration error: {e}. Please add serviceAccountKey.json or configure Streamlit secrets.")
                 return None
